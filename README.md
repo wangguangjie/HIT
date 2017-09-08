@@ -3,5 +3,5 @@
 如果觉得什么地方更改比较好的，加入开源...
 
 #### 二.程序界面
-![主界面](hit1.png)
-![详细](hit2.png)
+<img src="res/project1-hit/1.png" class="project1-1-picture" width="276" height="368" align="center">
+<img src="res/project1-hit/2.png" class="project1-1-picture" width="276" height="368" align="center">
