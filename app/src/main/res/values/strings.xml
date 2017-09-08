@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">哈工大通知</string>
+    <string name="app_name">通知</string>
     <string name="title_name_1">招聘信息获取</string>
     <string name="search_query">输入你关注的</string>
     <string name="pull_to_refresh">下拉可以刷新</string>

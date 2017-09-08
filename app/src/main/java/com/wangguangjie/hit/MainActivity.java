@@ -270,7 +270,7 @@ public class MainActivity extends Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
-                final AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
+                final AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this,AlertDialog.THEME_HOLO_DARK);
                 builder.setTitle("提示");
                 //builder.setMessage("需要使用浏览器打开吗?");
                 builder.setSingleChoiceItems(new String[]{"本地打开查看", "浏览器打开"}, 0, new DialogInterface.OnClickListener() {
