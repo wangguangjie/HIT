@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="classifies">
+        <item>通知公告</item>
+        <item>新闻速递</item>
+        <item>校园动态</item>
+        <item>讲座论坛</item>
+        <item>媒体报道</item>
+    </string-array>
+</resources>
