@@ -13,11 +13,14 @@
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 
-    <style name="mySpinnerStyle" parent="android:Widget.Holo.Spinner"></style>
+    <style name="mySpinnerStyle" parent="android:Widget.Holo.Spinner">
+
+    </style>
 
     <style name="myTitleTextStyle" parent="android:Widget">
         <item name="android:textColor">@color/colorAccent</item>
     </style>
+
 
     <!-- Alterdialog 样式-->
     <style name="myAlterDialogStyle" parent="android:Theme.Holo.Dialog">

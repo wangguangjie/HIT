@@ -9,16 +9,19 @@
         android:id="@+id/item_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
         android:textSize="20dp"
         android:text="item"/>
     <TextView
         android:id="@+id/item_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
         android:textSize="15sp"/>
     <TextView
         android:id="@+id/item_visitCount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
         android:textSize="15sp"/>
 </LinearLayout>

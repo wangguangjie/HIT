@@ -1,6 +1,8 @@
-package com.wangguangjie.hit;
+package com.wangguangjie.hit.utils;
 
 import android.content.SharedPreferences;
+
+import com.wangguangjie.hit.model.NewItem;
 
 import java.util.ArrayList;
 
@@ -11,16 +13,13 @@ import java.util.ArrayList;
 public class StoreInformation {
     //存储列表数据;
     private ArrayList<NewItem> lists=new ArrayList<>();
-    //private Context context;
     //用于保存列表数据;
     public final static String LIST_SIZE="SIZE";
     private SharedPreferences preferences;
 
     public StoreInformation(SharedPreferences p)
     {
-        //preferences=new MainActivity().preferences;
         preferences=p;
-        //preferences= PreferenceManager.getDefaultSharedPreferences(c);
     }
 
     public void addItem(NewItem item)
@@ -53,8 +52,6 @@ public class StoreInformation {
     }
     public void recoveryData()
     {
-        //ArrayList<NewItem> p_lists=new ArrayList<>();
-        //SharedPreferences.Editor editor=preferences.edit();
         for(int i=0;i<preferences.getInt(LIST_SIZE,0);i++)
         {
             String title,time,url,visitCount;

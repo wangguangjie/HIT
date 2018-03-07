@@ -1,4 +1,4 @@
-package com.wangguangjie.hit;
+package com.wangguangjie.hit.controller;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.wangguangjie.hit.R;
+import com.wangguangjie.hit.model.NewItem;
 
 import java.util.ArrayList;
 
