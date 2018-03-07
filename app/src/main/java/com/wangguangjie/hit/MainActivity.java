@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -141,6 +142,14 @@ public class MainActivity extends Activity {
         new Thread(new RecoveryThread()).start();
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        //用户初次则自动进行首次数据获取;
+        if(store_lists.getLists().size()==0){
+            new Thread(new getThread()).start();
+        }
+    }
     //加载菜单
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -205,19 +214,22 @@ public class MainActivity extends Activity {
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         actionBar.setListNavigationCallbacks(spinnerAdapter,
                 navigationListener);
-        actionBar.setTitle("HIT官网信息");
+        actionBar.setTitle(getResources().getString(R.string.title));
         actionBar.setIcon(R.mipmap.hit);
         //注册ListView监听
         mListView=findViewById(R.id.listview);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
-                Intent intent1=new Intent(MainActivity.this,WebInformation.class);
-                Bundle bundle=new Bundle();
-                NewItem item=store_lists.getLists().get(position-1);
-                bundle.putString("url",item.getUrl());
-                intent1.putExtras(bundle);
-                startActivity(intent1);
+                Log.d("mytest","1");
+                if (store_lists.getLists()!=null&&store_lists.getLists().size() > 0) {
+                    Intent intent1 = new Intent(MainActivity.this, WebInformation.class);
+                    Bundle bundle = new Bundle();
+                    NewItem item = store_lists.getLists().get(position - 1);
+                    bundle.putString("url", item.getUrl());
+                    intent1.putExtras(bundle);
+                    startActivity(intent1);
+                }
             }
         });
         //注册RefreshLinearLayout的下拉刷新监听器

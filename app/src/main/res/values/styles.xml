@@ -7,6 +7,7 @@
         <item name="android:spinnerDropDownItemStyle">@style/mySpinnerDrownItemStyle</item>
         <item name="android:spinnerStyle">@style/mySpinnerStyle</item>
         <item name="android:titleTextStyle">@style/myTitleTextStyle</item>
+        <item name="android:statusBarColor">@color/c1</item>
     </style>
 
     <style name="mySpinnerDrownItemStyle" parent="android:Widget.Holo.DropDownItem.Spinner">

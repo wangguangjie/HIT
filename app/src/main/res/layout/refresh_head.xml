@@ -21,7 +21,7 @@
                android:id="@+id/arrow"
                android:layout_width="40dp"
                android:layout_height="match_parent"
-               android:src="@drawable/up_arrow"
+               android:src="@drawable/down_arrow"
                android:layout_gravity="right|center"
                android:paddingRight="5dp"/>
        </FrameLayout>

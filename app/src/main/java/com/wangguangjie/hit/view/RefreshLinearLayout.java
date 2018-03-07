@@ -59,6 +59,7 @@ public class RefreshLinearLayout extends LinearLayout implements View.OnTouchLis
     private int RELEASE_TO_REFRESH=2;
     private int REFRESHING=3;
     private int PUSH_GET_MORE=4;
+    private int GETING_MORE=5;
 
     //当前状态;
     private int mCurrentState=REFRESH_COMPLETED;
@@ -120,10 +121,6 @@ public class RefreshLinearLayout extends LinearLayout implements View.OnTouchLis
         mImageView=(ImageView)mHeader.findViewById(R.id.arrow);
         mDescriptionTextView=(TextView)mHeader.findViewById(R.id.description);
         mUpdateTimeTextView=(TextView)mHeader.findViewById(R.id.update_time);
-        //
-        //mRooter=(LinearLayout)LayoutInflater.from(context).inflate(R.layout.refresh_root,null);
-        //mRootTextView=(TextView)mRooter.findViewById(R.id.get_more);
-
         mTouchSlop= ViewConfiguration.get(context).getScaledTouchSlop();
         mSharedPreferences= PreferenceManager.getDefaultSharedPreferences(context);
         hasLoaded=false;
@@ -231,13 +228,15 @@ public class RefreshLinearLayout extends LinearLayout implements View.OnTouchLis
     //ListView触摸事件;
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        canRefresh=false;
-        canGetMore=false;
-        canRefresh();
-        canGetMore();
+        //只有刚按下去的时候才进行判断是否能够进行下拉刷新或者上拉加载更多
+        if(event.getAction()==MotionEvent.ACTION_DOWN){
+            canRefresh=canRefresh();
+            canGetMore=canGetMore();
+        }
         if(canRefresh||canGetMore)
         {
             switch (event.getAction()) {
+                //获取按下的的y坐标;
                 case MotionEvent.ACTION_DOWN: {
                     mYDown = event.getRawY();
                     break;
@@ -245,7 +244,7 @@ public class RefreshLinearLayout extends LinearLayout implements View.OnTouchLis
                 case MotionEvent.ACTION_MOVE: {
                     float currentY = event.getRawY();
                     float distance = currentY - mYDown;
-                    //下拉;
+                    //此时可以进行下拉，并且是下拉操作;
                     if(distance>=0&&canRefresh) {
                         //距离小于阈值时候不进行上拉操作;
                         if (distance <= mTouchSlop){
@@ -256,7 +255,7 @@ public class RefreshLinearLayout extends LinearLayout implements View.OnTouchLis
                         }
                         if(mHeaderMarginLayoutParams.topMargin<-mHeader.getHeight())
                             return false;
-                        //控制下拉操作的范围;
+                        //控制下拉操作的范围,在下拉范围内进行正常的下拉操作;
                         if (distance <= 600) {
                             //根据用户移动的距离计算下拉距离;
                             mHeaderMarginLayoutParams.topMargin = (int) distance / 2 - mHeader.getHeight();
@@ -276,14 +275,14 @@ public class RefreshLinearLayout extends LinearLayout implements View.OnTouchLis
                     }else if(distance<0&&canGetMore){
                             //上拉
                             distance=mYDown-currentY;
-                            if(distance<mTouchSlop)
+                            if(distance<mTouchSlop){
+                                mHeaderMarginLayoutParams.topMargin=(- mHeader.getHeight());
+                                mHeader.setLayoutParams(mHeaderMarginLayoutParams);
                                 return false;
+                            }
+                            mCurrentState=PUSH_GET_MORE;
                         }
-                    else if(distance<0){
-                        mHeaderMarginLayoutParams.topMargin=(- mHeader.getHeight());
-                        mHeader.setLayoutParams(mHeaderMarginLayoutParams);
-                        return false;
-                        }
+                        //除了够进行下拉操作并且下拉刷新进行处理，和能够进行上拉操作并进行上拉操作进行处理之外，其余操作屏蔽
                     else{
                         return false;
                       }
@@ -291,15 +290,15 @@ public class RefreshLinearLayout extends LinearLayout implements View.OnTouchLis
                     break;
                 case MotionEvent.ACTION_UP: {
                     if (mCurrentState == PULL_TO_REFRESH) {
-                        canRefresh=false;
+                        //如果释放时是下拉刷新，则不刷新并隐藏header;
                         new HideHeaderTask().execute();
                     } else if (mCurrentState == RELEASE_TO_REFRESH) {
-                        canRefresh=false;
+                        //如果释放时是释放刷新操作,则进行刷新操作;
                         mLastState=mCurrentState;
                         mCurrentState=REFRESHING;
                         new RefreshingTask().execute();
-                    } else if(canGetMore){
-                        mCurrentState=PUSH_GET_MORE;
+                    } else if(mCurrentState==PUSH_GET_MORE){
+                        mCurrentState=GETING_MORE;
                         Toast.makeText(mContext,"正在获取更多信息", Toast.LENGTH_SHORT).show();
                         canGetMore=false;
                         new GetMoreTask().execute();
@@ -323,52 +322,45 @@ public class RefreshLinearLayout extends LinearLayout implements View.OnTouchLis
         }
     }
     //判断是否可以进行下拉操作;
-    private void canRefresh(){
-        View firstChild = mListView.getChildAt(0);
+    private boolean canRefresh(){
         //只有当前一次刷新操作完毕才进行下次下拉操作
-        if(mCurrentState!=REFRESHING&&mCurrentState!=PUSH_GET_MORE) {
+        if(mCurrentState==REFRESH_COMPLETED) {
+            View firstChild = mListView.getChildAt(0);
             //如果ListView不为空,则只有当其第一项在最顶端且此时顶端距离父组件为0才允许进行下拉操作;
             if (firstChild != null) {
                 int firstVisiblePos = mListView.getFirstVisiblePosition();
                 if (firstVisiblePos == 0 && firstChild.getTop() == 0) {
-                    canRefresh=true;
+                    return true;
                 } else {
-                    canRefresh=false;
+                    return false;
                 }
             }
             //如果ListView为空时不允许下拉操作;
             else {
-                canRefresh=false;
+                return true;
             }
         }else {
-            canRefresh=false;
+            return false;
         }
     }
 
-//    private void canGetMore(){
-//        View lastChild=mListView.getChildAt(mListView.getChildCount()-1);
-//        if(mCurrentState!=REFRESHING&&mCurrentState!=PUSH_GET_MORE){
-//            if(lastChild!=null){
-//                if(lastChild.getBottom()==mListView.getHeight()){
-//                    canGetMore=true;
-//                }
-//                else{
-//                    canGetMore=false;
-//                }
-//            }
-//            else canGetMore=false;
-//        }
-//        else{
-//            canGetMore=false;
-//        }
-//    }
-
     //首先判断可见的最下面的View是否是最后一个，如果是则说明已经滑到最后一项了，再判断此时最后一个View视图的底部和父控件的顶部边缘的距离，如果恰好是屏幕大小则说明无法再继续滑到.
-    private void canGetMore(){
+    private boolean canGetMore(){
+        //首先判断最下面的选项时候是ListView的最后一个选项(但ListView为空);
         if(mListView.getLastVisiblePosition()==(mListView.getCount()-1)){
             View bottomView=mListView.getChildAt(mListView.getLastVisiblePosition()-
                     mListView.getFirstVisiblePosition());
-            canGetMore=(mListView.getHeight()==bottomView.getBottom());
+            //判断ListView是否为空;
+            if(bottomView!=null)
+            {
+                //如果是最后一个选项，再判断是否完全滑到底端;
+                return (mListView.getHeight()==bottomView.getBottom());
+            }else{
+                //列表选项无法进行上拉获取更多;
+                return false;
+            }
+        }else{
+            return false;
         }
     }
 
