@@ -7,4 +7,11 @@
         <item>讲座论坛</item>
         <item>媒体报道</item>
     </string-array>
+    <string-array name="items_urls">
+        <item>http://www.hitsz.edu.cn/article/id-74.html</item>
+        <item>http://www.hitsz.edu.cn/article/id-75.html</item>
+        <item>http://www.hitsz.edu.cn/article/id-77.html</item>
+        <item>http://www.hitsz.edu.cn/article/id-78.html</item>
+        <item>http://www.hitsz.edu.cn/article/id-80.html</item>
+    </string-array>
 </resources>

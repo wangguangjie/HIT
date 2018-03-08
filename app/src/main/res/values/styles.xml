@@ -1,6 +1,7 @@
 <resources>
 
-    <style name="AppTheme" parent="android:Theme.Black.NoTitleBar"></style>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar"></style>
+
 
     <style name="mytheme" parent="android:Theme.Holo.Light.DarkActionBar">
         <item name="android:windowBackground">@color/background_white</item>

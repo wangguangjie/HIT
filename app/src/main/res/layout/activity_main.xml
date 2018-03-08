@@ -1,13 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.wangguangjie.hit.view.RefreshLinearLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/refresh_linear_layout">
-
-    <ListView
-        android:id="@+id/listview"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/white">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/title"
+            android:gravity="center"
+            android:textSize="20sp"/>
+    </android.support.v7.widget.Toolbar>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <android.support.design.widget.TabLayout
+                android:id="@+id/table_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:tabMode="scrollable"
+                app:tabIndicatorColor="@android:color/transparent">
+            </android.support.design.widget.TabLayout>
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="right"
+                android:src="@drawable/ic_plus_new"
+                android:background="#fff"
+                android:paddingTop="5dp"
+                android:paddingRight="5dp"
+                android:paddingLeft="5dp"
+                android:alpha="0.6"/>
+        </FrameLayout>
+    </LinearLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </ListView>
-</com.wangguangjie.hit.view.RefreshLinearLayout>
+    </android.support.v4.view.ViewPager>
+</LinearLayout>

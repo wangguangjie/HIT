@@ -7,7 +7,7 @@
     <application
         android:icon="@mipmap/hit"
         android:label="@string/app_name"
-        android:theme="@style/mytheme">
+        android:theme="@style/AppTheme">
         <activity android:name=".MainActivity" android:configChanges="orientation|keyboard">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

@@ -3,7 +3,6 @@ package com.wangguangjie.hit.view;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -19,7 +18,6 @@ import android.widget.Toast;
 
 import com.wangguangjie.hit.R;
 
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by wangguangjie on 2018/2/14.
@@ -95,7 +93,6 @@ public class RefreshLinearLayout extends LinearLayout implements View.OnTouchLis
     private int mRatio=-10;
     //
     private MarginLayoutParams mHeaderMarginLayoutParams;
-    private MarginLayoutParams mRooterMarginLayoutParams;
     //刷新监听器;
     private RefreshingListener mRefreshingListener;
     //
@@ -111,8 +108,10 @@ public class RefreshLinearLayout extends LinearLayout implements View.OnTouchLis
     //
     private boolean canRefresh;
     private boolean canGetMore;
+    //
+    private String mSharedPreferencesName="DEFAULT_NAME";
 
-    public RefreshLinearLayout(Context context, @Nullable AttributeSet attrs) {
+    public RefreshLinearLayout(Context context,  AttributeSet attrs) {
         super(context, attrs);
         //初始化值;
         mContext=context;
@@ -122,7 +121,9 @@ public class RefreshLinearLayout extends LinearLayout implements View.OnTouchLis
         mDescriptionTextView=(TextView)mHeader.findViewById(R.id.description);
         mUpdateTimeTextView=(TextView)mHeader.findViewById(R.id.update_time);
         mTouchSlop= ViewConfiguration.get(context).getScaledTouchSlop();
-        mSharedPreferences= PreferenceManager.getDefaultSharedPreferences(context);
+        //mSharedPreferences= PreferenceManager.getDefaultSharedPreferences(context);
+        //针对不同的刷新LinearLayout分别获取对于的SharedPreferences,如果用户没有设置，则使用默认的SharePreferences
+        //mSharedPreferences=mContext.getSharedPreferences(mSharedPreferencesName,mContext.MODE_PRIVATE);
         hasLoaded=false;
         //是指为垂直布局;
         setOrientation(VERTICAL);
@@ -152,7 +153,7 @@ public class RefreshLinearLayout extends LinearLayout implements View.OnTouchLis
             mListView = (ListView) this.getChildAt(1);
 
             if(mListView!=null)
-               mListView.setOnTouchListener(this);
+                mListView.setOnTouchListener(this);
             hasLoaded=true;
         }
     }
@@ -169,8 +170,12 @@ public class RefreshLinearLayout extends LinearLayout implements View.OnTouchLis
         mDescriptionTextView.setText(description);
     }
 
+    public void setSharedPreferenceName(String name){
+        mSharedPreferencesName=name;
+    }
     private void setHeaderUpdateTime(){
         long currentTime= System.currentTimeMillis();
+        mSharedPreferences=mContext.getSharedPreferences(mSharedPreferencesName,mContext.MODE_PRIVATE);
         long lastTime=mSharedPreferences.getLong(LAST_UPDATE_TIME,-1);
         String description="";
         Long time=(currentTime-lastTime)/1000;
@@ -273,21 +278,21 @@ public class RefreshLinearLayout extends LinearLayout implements View.OnTouchLis
                             setHeaderDescription();
                         }
                     }else if(distance<0&&canGetMore){
-                            //上拉
-                            distance=mYDown-currentY;
-                            if(distance<mTouchSlop){
-                                mHeaderMarginLayoutParams.topMargin=(- mHeader.getHeight());
-                                mHeader.setLayoutParams(mHeaderMarginLayoutParams);
-                                return false;
-                            }
-                            mCurrentState=PUSH_GET_MORE;
+                        //上拉
+                        distance=mYDown-currentY;
+                        if(distance<mTouchSlop){
+                            mHeaderMarginLayoutParams.topMargin=(- mHeader.getHeight());
+                            mHeader.setLayoutParams(mHeaderMarginLayoutParams);
+                            return false;
                         }
-                        //除了够进行下拉操作并且下拉刷新进行处理，和能够进行上拉操作并进行上拉操作进行处理之外，其余操作屏蔽
+                        mCurrentState=PUSH_GET_MORE;
+                    }
+                    //除了够进行下拉操作并且下拉刷新进行处理，和能够进行上拉操作并进行上拉操作进行处理之外，其余操作屏蔽
                     else{
                         return false;
-                      }
                     }
-                    break;
+                }
+                break;
                 case MotionEvent.ACTION_UP: {
                     if (mCurrentState == PULL_TO_REFRESH) {
                         //如果释放时是下拉刷新，则不刷新并隐藏header;
@@ -317,7 +322,7 @@ public class RefreshLinearLayout extends LinearLayout implements View.OnTouchLis
             setHeaderDescription();
             return true;
         }
-       else{
+        else{
             return false;
         }
     }
@@ -449,6 +454,7 @@ public class RefreshLinearLayout extends LinearLayout implements View.OnTouchLis
 
         @Override
         protected void onPostExecute(Integer res){
+            mSharedPreferences=mContext.getSharedPreferences(mSharedPreferencesName,mContext.MODE_PRIVATE);
             mSharedPreferences.edit().putLong(LAST_UPDATE_TIME, System.currentTimeMillis()).commit();
             refreshCompleted();
             setAnimation();
@@ -469,7 +475,7 @@ public class RefreshLinearLayout extends LinearLayout implements View.OnTouchLis
         void onRefresh();
     }
 
-   public  interface GetMoreListener{
+    public  interface GetMoreListener{
         void onGetMore();
     }
 
