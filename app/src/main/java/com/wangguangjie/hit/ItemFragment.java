@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -80,7 +81,7 @@ public class ItemFragment extends Fragment{
     private String mPreferencesName="default_name";
 
 
-    private Handler handler = new Handler() {
+    private Handler handler = new Handler(Looper.myLooper()) {
         @Override
         public void handleMessage(Message msg) {
             //更改解析出信息,更新界面;
@@ -353,7 +354,7 @@ public class ItemFragment extends Fragment{
             //time=s.get(2).getElementsByTag("span").get(0).text();
             Elements s1=s.get(2).getElementsByTag("div");
             time=s1.get(1).text();
-            visitCount=s1.get(2).text()+"\n"+s1.get(3).text();
+            visitCount=s1.get(2).text()+"\n"+s.get(s.size()-1).text();
             store_lists.addItem(new NewItem(title,time,visitCount,url));
         }
     }
